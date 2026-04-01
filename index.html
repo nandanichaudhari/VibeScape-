@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>VibeScape | Immersive AI Mood Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Poppins', 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: #000;
+        }
+
+        /* Premium Glass-Morphism UI */
+        .ui-container {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            right: 40px;
+            z-index: 200;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+            justify-content: space-between;
+            background: rgba(15, 25, 45, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 24px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 0 20px rgba(100, 150, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            pointer-events: none;
+        }
+
+        .ui-container.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .ui-container:hover {
+            background: rgba(20, 35, 60, 0.55);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 0 30px rgba(100, 150, 255, 0.4);
+        }
+
+        /* Input Groups */
+        .input-group {
+            flex: 2;
+            min-width: 260px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 245, 0.9);
+            text-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .glass-input {
+            width: 100%;
+            background: rgba(10, 20, 35, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 14px 20px;
+            color: white;
+            font-family: 'Poppins', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.5), 0 0 0 2px rgba(124, 58, 237, 0.2);
+            transform: translateY(-2px);
+            background: rgba(15, 30, 50, 0.85);
+        }
+
+        textarea.glass-input {
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .premium-btn {
+            position: relative;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(76, 29, 149, 0.9));
+            border: none;
+            border-radius: 40px;
+            padding: 12px 28px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            letter-spacing: 0.8px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .premium-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        .premium-btn:hover::before {
+            left: 100%;
+        }
+
+        .premium-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(91, 33, 182, 0.95));
+        }
+
+        .premium-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Mic Status with Glow */
+        .mic-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff4444;
+            box-shadow: 0 0 8px #ff4444;
+            transition: all 0.2s;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-led.active {
+            background: #44ff44;
+            box-shadow: 0 0 12px #44ff44, 0 0 20px rgba(68, 255, 68, 0.5);
+            animation: pulse-green 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 8px #44ff44; }
+            50% { box-shadow: 0 0 20px #44ff44, 0 0 30px rgba(68, 255, 68, 0.6); }
+        }
+
+        #micText {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: monospace;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-panel:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(124, 58, 237, 0.6);
+        }
+
+        /* Mood Badge */
+        .mood-badge {
+            position: fixed;
+            bottom: 120px;
+            left: 40px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            padding: 8px 20px;
+            border-radius: 40px;
+            border-left: 3px solid #7c3aed;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: all 0.3s;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .ui-container {
+                flex-direction: column;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                padding: 20px;
+            }
+            .button-group {
+                justify-content: space-between;
+                width: 100%;
+            }
+            .mood-badge {
+                bottom: 100px;
+                left: 20px;
+                font-size: 0.7rem;
+                max-width: 250px;
+                white-space: normal;
+            }
+        }
+
+        /* Loading effect */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="info-panel">
+        🎧 VIBESCAPE • AI MOOD VISUALIZER
+    </div>
+    <div class="mood-badge" id="moodBadge">
+        ✨ current vibe: dreamy cosmic nebula
+    </div>
+    <div class="ui-container" id="ui">
+        <div class="input-group">
+            <label>✨ MANIFEST YOUR VIBE</label>
+            <textarea id="moodInput" class="glass-input" rows="2" placeholder="Describe your mood... e.g., 'neon dreams in rain', 'ethereal golden forest', 'cosmic purple storm'"></textarea>
+        </div>
+        <div class="button-group">
+            <button id="micBtn" class="premium-btn">🎤 CONNECT MIC</button>
+            <button id="generateBtn" class="premium-btn">🌀 GENERATE LANDSCAPE</button>
+            <div class="mic-status">
+                <span class="status-led" id="micLed"></span>
+                <span id="micText">Mic offline</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
+        // --- SCENE SETUP WITH IMMERSIVE ATMOSPHERE ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x020210);
+        scene.fog = new THREE.FogExp2(0x020210, 0.006);
+        
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(7, 5, 14);
+        camera.lookAt(0, 1, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        renderer.toneMappingExposure = 1.3;
+        document.body.appendChild(renderer.domElement);
+        
+        // Post Processing with intense bloom
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.3, 0.4, 0.9);
+        bloomPass.threshold = 0.08;
+        bloomPass.strength = 1.1;
+        bloomPass.radius = 0.8;
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // Cinematic Controls with auto-rotation
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.maxPolarAngle = Math.PI / 2.2;
+        controls.target.set(0, 1.5, 0);
+        
+        // --- TERRAIN WITH ADVANCED GEOMETRY ---
+        const width = 28;
+        const depth = 28;
+        const segments = 160;
+        const geometry = new THREE.PlaneGeometry(width, depth, segments, segments);
+        geometry.rotateX(-Math.PI / 2);
+        const positionAttribute = geometry.attributes.position;
+        const originalY = new Array(positionAttribute.count).fill(0);
+        
+        for (let i = 0; i < positionAttribute.count; i++) {
+            const x = positionAttribute.getX(i);
+            const z = positionAttribute.getZ(i);
+            let y = Math.sin(x * 0.45) * 0.5 + Math.cos(z * 0.55) * 0.5;
+            y += Math.sin(x * 1.2) * 0.2 * Math.cos(z * 1.2);
+            originalY[i] = y;
+            positionAttribute.setY(i, y);
+        }
+        geometry.computeVertexNormals();
+        
+        const terrainMaterial = new THREE.MeshStandardMaterial({
+            color: 0x4a3c8c,
+            emissive: 0x2a1c5c,
+            emissiveIntensity: 0.5,
+            roughness: 0.35,
+            metalness: 0.75,
+            flatShading: false,
+            side: THREE.DoubleSide
+        });
+        const terrain = new THREE.Mesh(geometry, terrainMaterial);
+        scene.add(terrain);
+        
+        // --- GLOWING PARTICLE SYSTEM (STARFIELD + FLOATING ORBS)---
+        const particleCount = 6000;
+        const particleGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleColors = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 85;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 12 + 2;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 55 - 15;
+            const color = new THREE.Color().setHSL(0.6 + Math.random() * 0.3, 0.8, 0.6);
+            particleColors[i*3] = color.r;
+            particleColors[i*3+1] = color.g;
+            particleColors[i*3+2] = color.b;
+        }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        const particleMaterial = new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending });
+        const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particleSystem);
+        
+        // Floating Runes / Orbs
+        const orbGroup = [];
+        for (let i = 0; i < 180; i++) {
+            const size = 0.06 + Math.random() * 0.12;
+            const orbMat = new THREE.MeshStandardMaterial({
+                color: 0xff66cc,
+                emissive: 0xff44aa,
+                emissiveIntensity: 0.5,
+                metalness: 0.3,
+                roughness: 0.2
+            });
+            const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 16), orbMat);
+            sphere.userData = {
+                speedX: (Math.random() - 0.5) * 0.012,
+                speedY: (Math.random() - 0.5) * 0.008,
+                speedZ: (Math.random() - 0.5) * 0.01,
+                phase: Math.random() * Math.PI * 2
+            };
+            sphere.position.x = (Math.random() - 0.5) * 22;
+            sphere.position.y = Math.random() * 5 + 0.5;
+            sphere.position.z = (Math.random() - 0.5) * 20;
+            scene.add(sphere);
+            orbGroup.push(sphere);
+        }
+        
+        // Dynamic Lighting System
+        const ambientLight = new THREE.AmbientLight(0x1a1a2e);
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffccaa, 1.0);
+        mainLight.position.set(5, 12, 4);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        const backLight = new THREE.PointLight(0x4466ff, 0.8);
+        backLight.position.set(-4, 5, -7);
+        scene.add(backLight);
+        const colorLight = new THREE.PointLight(0xff66aa, 0.9);
+        colorLight.position.set(3, 4, 4);
+        scene.add(colorLight);
+        const fillLight = new THREE.PointLight(0x33ccff, 0.5);
+        fillLight.position.set(2, 3, -3);
+        scene.add(fillLight);
+        
+        // Starfield background effect (distant particles)
+        const starGeo = new THREE.BufferGeometry();
+        const starCount = 1500;
+        const starPos = [];
+        for (let i = 0; i < starCount; i++) {
+            starPos.push((Math.random() - 0.5) * 200);
+            starPos.push((Math.random() - 0.5) * 100);
+            starPos.push((Math.random() - 0.5) * 80 - 40);
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        
+        // --- AUDIO SETUP ---
+        let audioContext = null;
+        let mediaStream = null;
+        let sourceNode = null;
+        let analyserNode = null;
+        let isMicActive = false;
+        let audioDataArray = null;
+        
+        const micBtn = document.getElementById('micBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const moodTextarea = document.getElementById('moodInput');
+        const micLed = document.getElementById('micLed');
+        const micTextSpan = document.getElementById('micText');
+        const moodBadge = document.getElementById('moodBadge');
+        
+        // --- AI SIMULATION (Enhanced keyword mapping)---
+        function simulateAIInterpretation(moodText) {
+            const text = moodText.toLowerCase();
+            let params = {
+                colorHue: 0.65,
+                saturation: 0.75,
+                lightness: 0.55,
+                particleSpeed: 0.5,
+                turbulence: 0.55,
+                bloomStrength: 1.0,
+                emissiveIntensity: 0.6,
+                movementIntensity: 0.65,
+                orbSpeed: 0.5
+            };
+            
+            if (text.includes('blue') || text.includes('sad') || text.includes('melancholy')) {
+                params = { ...params, colorHue: 0.55, saturation: 0.7, turbulence: 0.35, particleSpeed: 0.25, bloomStrength: 0.8 };
+            }
+            if (text.includes('fire') || text.includes('angry') || text.includes('red') || text.includes('volcano')) {
+                params = { ...params, colorHue: 0.05, saturation: 0.9, turbulence: 0.9, particleSpeed: 0.95, movementIntensity: 1.1, bloomStrength: 1.4 };
+            }
+            if (text.includes('neon') || text.includes('cyber') || text.includes('city') || text.includes('rain')) {
+                params = { ...params, colorHue: 0.82, saturation: 0.95, turbulence: 0.75, particleSpeed: 0.85, bloomStrength: 1.5, emissiveIntensity: 0.9 };
+            }
+            if (text.includes('forest') || text.includes('green') || text.includes('nature') || text.includes('calm')) {
+                params = { ...params, colorHue: 0.35, saturation: 0.75, turbulence: 0.45, particleSpeed: 0.35, movementIntensity: 0.45 };
+            }
+            if (text.includes('gold') || text.includes('sunset') || text.includes('euphoric')) {
+                params = { ...params, colorHue: 0.12, saturation: 0.85, turbulence: 0.55, particleSpeed: 0.7, bloomStrength: 1.2 };
+            }
+            if (text.includes('purple') || text.includes('cosmic') || text.includes('space')) {
+                params = { ...params, colorHue: 0.75, saturation: 0.85, turbulence: 0.65, particleSpeed: 0.6, bloomStrength: 1.3, emissiveIntensity: 0.85 };
+            }
+            if (text.includes('storm') || text.includes('chaos')) {
+                params = { ...params, turbulence: 0.95, movementIntensity: 1.0, colorHue: 0.6, saturation: 0.6 };
+            }
+            return params;
+        }
+        
+        let currentParams = simulateAIInterpretation("dreamy cosmic");
+        let targetParams = { ...currentParams };
+        let tweenFactor = 1;
+        
+        function applyNewMood(moodText) {
+            targetParams = simulateAIInterpretation(moodText);
+            tweenFactor = 0;
+            moodBadge.textContent = `✨ current vibe: ${moodText.substring(0, 40)}${moodText.length > 40 ? '...' : ''}`;
+        }
+        
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        
+        function updateVisualFromParams(delta) {
+            if (tweenFactor < 1) {
+                tweenFactor += delta * 2.2;
+                if (tweenFactor > 1) tweenFactor = 1;
+                const ease = 1 - Math.pow(1 - tweenFactor, 2);
+                currentParams.colorHue = lerp(currentParams.colorHue, targetParams.colorHue, ease);
+                currentParams.saturation = lerp(currentParams.saturation, targetParams.saturation, ease);
+                currentParams.turbulence = lerp(currentParams.turbulence, targetParams.turbulence, ease);
+                currentParams.particleSpeed = lerp(currentParams.particleSpeed, targetParams.particleSpeed, ease);
+                currentParams.movementIntensity = lerp(currentParams.movementIntensity, targetParams.movementIntensity, ease);
+                currentParams.bloomStrength = lerp(currentParams.bloomStrength, targetParams.bloomStrength, ease);
+                currentParams.emissiveIntensity = lerp(currentParams.emissiveIntensity, targetParams.emissiveIntensity, ease);
+                
+                bloomPass.strength = currentParams.bloomStrength;
+                const mainColor = new THREE.Color().setHSL(currentParams.colorHue, currentParams.saturation, 0.5);
+                const emissiveColor = new THREE.Color().setHSL(currentParams.colorHue, currentParams.saturation, 0.15);
+                terrainMaterial.color = mainColor;
+                terrainMaterial.emissive = emissiveColor;
+                terrainMaterial.emissiveIntensity = currentParams.emissiveIntensity;
+                colorLight.color.setHSL(currentParams.colorHue, 0.8, 0.6);
+                fillLight.color.setHSL((currentParams.colorHue + 0.3) % 1, 0.7, 0.6);
+            }
+        }
+        
+        // --- MICROPHONE FUNCTIONS ---
+        async function initMicrophone() {
+            if (audioContext && audioContext.state !== 'closed') await closeAudioContext();
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaStream = stream;
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyserNode = audioContext.createAnalyser();
+                analyserNode.fftSize = 256;
+                audioDataArray = new Uint8Array(analyserNode.frequencyBinCount);
+                sourceNode = audioContext.createMediaStreamSource(stream);
+                sourceNode.connect(analyserNode);
+                await audioContext.resume();
+                isMicActive = true;
+                micLed.classList.add('active');
+                micTextSpan.innerText = "Mic LIVE";
+            } catch (err) {
+                isMicActive = false;
+                micLed.classList.remove('active');
+                micTextSpan.innerText = "Mic Error";
+                alert("Please allow microphone access for audio-reactive magic!");
+            }
+        }
+        
+        async function closeAudioContext() {
+            if (sourceNode) sourceNode.disconnect();
+            if (analyserNode) analyserNode.disconnect();
+            if (audioContext) await audioContext.close();
+            if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+            isMicActive = false;
+            micLed.classList.remove('active');
+            micTextSpan.innerText = "Mic offline";
+        }
+        
+        micBtn.addEventListener('click', async () => {
+            if (isMicActive) await closeAudioContext();
+            else await initMicrophone();
+        });
+        
+        generateBtn.addEventListener('click', () => {
+            const mood = moodTextarea.value.trim();
+            if (mood) applyNewMood(mood);
+            else applyNewMood("ethereal dreamwave");
+        });
+        
+        // --- ANIMATION LOOP WITH AUDIO REACTIVITY ---
+        let lastTime = performance.now();
+        
+        function animateScene() {
+            const now = performance.now();
+            let delta = Math.min(0.033, (now - lastTime) / 1000);
+            lastTime = now;
+            
+            updateVisualFromParams(delta);
+            
+            let bassEnergy = 0.4, trebleEnergy = 0.3;
+            if (isMicActive && analyserNode && audioDataArray) {
+                analyserNode.getByteFrequencyData(audioDataArray);
+                let bassSum = 0, trebleSum = 0;
+                for (let i = 0; i < 15; i++) bassSum += audioDataArray[i];
+                for (let i = audioDataArray.length - 25; i < audioDataArray.length; i++) trebleSum += audioDataArray[i];
+                bassEnergy = Math.min(1, (bassSum / (15 * 255)) * 1.3);
+                trebleEnergy = Math.min(0.9, (trebleSum / (25 * 255)) * 1.2);
+            } else {
+                const t = performance.now() * 0.002;
+                bassEnergy = 0.35 + Math.sin(t) * 0.2;
+                trebleEnergy = 0.3 + Math.cos(t * 1.5) * 0.2;
+            }
+            
+            // Terrain morphing
+            const positions = geometry.attributes.position.array;
+            const time = performance.now() * 0.002;
+            for (let i = 0; i < positions.length / 3; i++) {
+                const x = positions[i*3];
+                const z = positions[i*3+2];
+                let yBase = Math.sin(x * 0.5 + time * 0.6) * 0.4 + Math.cos(z * 0.6 + time * 0.5) * 0.4;
+                yBase += Math.sin(x * 1.3 + z * 1.1) * 0.2;
+                const audioBoost = bassEnergy * 0.9 * currentParams.movementIntensity;
+                const turb = currentParams.turbulence;
+                let yOffset = Math.sin(x * 1.6 + time * 1.2) * Math.cos(z * 1.6) * turb * (0.5 + audioBoost);
+                positions[i*3+1] = yBase + yOffset * 0.9 + audioBoost * 0.6;
+            }
+            geometry.attributes.position.needsUpdate = true;
+            geometry.computeVertexNormals();
+            
+            // Particles react to treble
+            particleMaterial.size = 0.07 + trebleEnergy * 0.1;
+            particleSystem.rotation.y += 0.003 + trebleEnergy * 0.01;
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0003;
+            
+            // Orbs motion
+            orbGroup.forEach((orb, idx) => {
+                const speedFact = 0.008 + currentParams.particleSpeed * 0.018 + trebleEnergy * 0.015;
+                orb.position.x += Math.sin(performance.now() * 0.002 + idx) * 0.008 * speedFact;
+                orb.position.z += Math.cos(performance.now() * 0.0023 + idx) * 0.008 * speedFact;
+                orb.position.y += Math.sin(performance.now() * 0.003 + idx) * 0.005 * speedFact;
+                if (Math.abs(orb.position.x) > 14) orb.position.x *= -0.98;
+                if (Math.abs(orb.position.z) > 16) orb.position.z *= -0.98;
+                if (orb.position.y > 6) orb.position.y = 0.5;
+                if (orb.position.y < 0.3) orb.position.y = 5;
+                const glowScale = 0.8 + trebleEnergy * 0.7;
+                orb.scale.set(glowScale, glowScale, glowScale);
+                orb.material.emissiveIntensity = 0.4 + bassEnergy * 0.8;
+                const orbHue = (currentParams.colorHue + 0.25) % 1;
+                orb.material.color.setHSL(orbHue, 0.9, 0.6);
+            });
+            
+            controls.autoRotateSpeed = 0.45 + trebleEnergy * 0.7 + currentParams.movementIntensity * 0.2;
+            const bgHue = (currentParams.colorHue + 0.55) % 1;
+            scene.background.setHSL(bgHue, 0.6, 0.04);
+            scene.fog.color.copy(scene.background);
+            colorLight.intensity = 0.7 + bassEnergy * 1.0;
+            mainLight.intensity = 0.8 + trebleEnergy * 0.8;
+            
+            controls.update();
+            effectComposer.render();
+            requestAnimationFrame(animateScene);
+        }
+        
+        // UI Visibility
+        let uiHideTimeout;
+        const uiDiv = document.getElementById('ui');
+        function showUI() {
+            uiDiv.classList.add('visible');
+            clearTimeout(uiHideTimeout);
+            uiHideTimeout = setTimeout(() => uiDiv.classList.remove('visible'), 3500);
+        }
+        window.addEventListener('mousemove', showUI);
+        window.addEventListener('touchstart', showUI);
+        showUI();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        applyNewMood("dreamy cosmic nebula");
+        animateScene();
+    </script>
+</body>
+</html>
