@@ -13,289 +13,700 @@
 
         body {
             overflow: hidden;
-            font-family: 'Poppins', 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 11px;
             background: #000;
         }
 
-        /* Premium Glass-Morphism UI */
-        .ui-container {
+        /* =============================================
+           WINDOWS 2000 SYSTEM COLOURS
+           ============================================= */
+        :root {
+            --win-face:        #d4d0c8;
+            --win-dark:        #808080;
+            --win-darker:      #404040;
+            --win-light:       #ffffff;
+            --win-hilight:     #ece9d8;
+            --win-shadow:      #9d9b91;
+            --win-title-from:  #0a246a;
+            --win-title-to:    #a6caf0;
+            --win-title-text:  #ffffff;
+            --win-btn-face:    #d4d0c8;
+            --win-border-lt:   #ffffff;
+            --win-border-dk:   #404040;
+            --win-border-mid:  #808080;
+        }
+
+        /* =============================================
+           RAISED / SUNKEN BORDER HELPERS
+           ============================================= */
+        .raised {
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+        }
+
+        .raised-sm {
+            border-top:    1px solid var(--win-border-lt);
+            border-left:   1px solid var(--win-border-lt);
+            border-right:  1px solid var(--win-border-mid);
+            border-bottom: 1px solid var(--win-border-mid);
+        }
+
+        .sunken {
+            border-top:    2px solid var(--win-border-dk);
+            border-left:   2px solid var(--win-border-dk);
+            border-right:  2px solid var(--win-border-lt);
+            border-bottom: 2px solid var(--win-border-lt);
+        }
+
+        .sunken-sm {
+            border-top:    1px solid var(--win-border-mid);
+            border-left:   1px solid var(--win-border-mid);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+        }
+
+        /* =============================================
+           MAIN WINDOW PANEL (bottom control area)
+           ============================================= */
+        .win-window {
             position: fixed;
-            bottom: 40px;
-            left: 40px;
-            right: 40px;
+            bottom: 32px;
+            left: 30px;
+            right: 30px;
             z-index: 200;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: flex-end;
-            justify-content: space-between;
-            background: rgba(15, 25, 45, 0.4);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 24px 32px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 0 20px rgba(100, 150, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: var(--win-face);
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            transition: opacity 0.2s, transform 0.15s;
             opacity: 0;
-            transform: translateY(30px) scale(0.98);
+            transform: translateY(20px);
             pointer-events: none;
         }
 
-        .ui-container.visible {
+        .win-window.visible {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
             pointer-events: auto;
         }
 
-        .ui-container:hover {
-            background: rgba(20, 35, 60, 0.55);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 0 30px rgba(100, 150, 255, 0.4);
+        /* Title bar */
+        .win-titlebar {
+            background: linear-gradient(to right, var(--win-title-from), var(--win-title-to));
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4px 0 6px;
+            user-select: none;
         }
 
-        /* Input Groups */
+        .win-title-text {
+            color: var(--win-title-text);
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .win-title-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .win-title-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Title bar buttons */
+        .win-titlebar-btns {
+            display: flex;
+            gap: 2px;
+        }
+
+        .win-tbtn {
+            width: 16px;
+            height: 14px;
+            background: var(--win-btn-face);
+            border-top:    1px solid var(--win-border-lt);
+            border-left:   1px solid var(--win-border-lt);
+            border-right:  1px solid var(--win-border-dk);
+            border-bottom: 1px solid var(--win-border-dk);
+            font-size: 9px;
+            font-family: 'Marlett', 'Tahoma', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .win-tbtn:active {
+            border-top:    1px solid var(--win-border-dk);
+            border-left:   1px solid var(--win-border-dk);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+        }
+
+        /* Window body */
+        .win-body {
+            padding: 8px 10px 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        /* =============================================
+           LABEL + TEXTAREA INPUT GROUP
+           ============================================= */
         .input-group {
             flex: 2;
             min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
         .input-group label {
-            display: block;
-            font-size: 0.7rem;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 245, 0.9);
-            text-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
-            backdrop-filter: blur(4px);
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
         }
 
-        .glass-input {
+        .win-textarea {
             width: 100%;
-            background: rgba(10, 20, 35, 0.7);
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            border-radius: 24px;
-            padding: 14px 20px;
-            color: white;
-            font-family: 'Poppins', monospace;
-            font-size: 0.95rem;
+            background: #fff;
+            border-top:    2px solid var(--win-border-dk);
+            border-left:   2px solid var(--win-border-dk);
+            border-right:  2px solid var(--win-border-lt);
+            border-bottom: 2px solid var(--win-border-lt);
+            padding: 4px 6px;
+            font-family: 'Tahoma', Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
             resize: vertical;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .glass-input:focus {
             outline: none;
-            border-color: #7c3aed;
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.5), 0 0 0 2px rgba(124, 58, 237, 0.2);
-            transform: translateY(-2px);
-            background: rgba(15, 30, 50, 0.85);
         }
 
-        textarea.glass-input {
-            font-family: inherit;
-            line-height: 1.5;
+        .win-textarea:focus {
+            background: #fff;
         }
 
-        /* Button Group */
+        /* =============================================
+           BUTTON GROUP
+           ============================================= */
         .button-group {
             display: flex;
-            gap: 16px;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 5px;
+            justify-content: flex-end;
         }
 
-        .premium-btn {
-            position: relative;
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(76, 29, 149, 0.9));
-            border: none;
-            border-radius: 40px;
-            padding: 12px 28px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: white;
+        .win-btn {
+            background: var(--win-btn-face);
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+            padding: 3px 14px;
+            font-family: 'Tahoma', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
             cursor: pointer;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-            letter-spacing: 0.8px;
-            overflow: hidden;
-            z-index: 1;
+            min-width: 130px;
+            text-align: center;
+            white-space: nowrap;
         }
 
-        .premium-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-            z-index: -1;
+        .win-btn:active {
+            border-top:    2px solid var(--win-border-dk);
+            border-left:   2px solid var(--win-border-dk);
+            border-right:  2px solid var(--win-border-lt);
+            border-bottom: 2px solid var(--win-border-lt);
+            padding: 4px 13px 2px 15px;
         }
 
-        .premium-btn:hover::before {
-            left: 100%;
+        .win-btn:hover {
+            background: var(--win-hilight);
         }
 
-        .premium-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(91, 33, 182, 0.95));
+        .win-btn:focus {
+            outline: 1px dotted #000;
+            outline-offset: -4px;
         }
 
-        .premium-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Mic Status with Glow */
+        /* Mic status row */
         .mic-status {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s;
+            gap: 6px;
+            background: var(--win-hilight);
+            border-top:    1px solid var(--win-border-dk);
+            border-left:   1px solid var(--win-border-dk);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+            padding: 3px 8px;
+            min-width: 130px;
         }
 
         .status-led {
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: #ff4444;
-            box-shadow: 0 0 8px #ff4444;
-            transition: all 0.2s;
-            animation: pulse 1.5s infinite;
+            background: #c0392b;
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
+            flex-shrink: 0;
+            border: 1px solid #7f1c12;
+            transition: background 0.2s, box-shadow 0.2s;
         }
 
         .status-led.active {
-            background: #44ff44;
-            box-shadow: 0 0 12px #44ff44, 0 0 20px rgba(68, 255, 68, 0.5);
-            animation: pulse-green 1s infinite;
+            background: #27ae60;
+            box-shadow: 0 0 4px #2ecc71, inset 1px 1px 1px rgba(255,255,255,0.4);
+            border-color: #155a30;
+            animation: led-blink 1s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 0 8px #44ff44; }
-            50% { box-shadow: 0 0 20px #44ff44, 0 0 30px rgba(68, 255, 68, 0.6); }
+        @keyframes led-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         #micText {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 11px;
+            color: #000;
+        }
+
+        /* =============================================
+           INFO PANEL — top right (like a dialog caption)
+           ============================================= */
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .info-window {
+            background: var(--win-face);
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            min-width: 220px;
+        }
+
+        .info-titlebar {
+            background: linear-gradient(to right, var(--win-title-from), var(--win-title-to));
+            height: 18px;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .info-titlebar span {
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .info-body {
+            padding: 4px 8px 6px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 1px 0;
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: var(--win-darker);
+            white-space: nowrap;
+        }
+
+        .info-value {
+            font-size: 10px;
+            font-weight: bold;
+            color: #000080;
+        }
+
+        /* Separator */
+        .win-separator {
+            height: 2px;
+            background: var(--win-border-mid);
+            border-top: 1px solid var(--win-border-dk);
+            margin: 4px 0;
+        }
+
+        /* =============================================
+           MOOD BADGE — styled as a status bar
+           ============================================= */
+        .mood-badge {
+            position: fixed;
+            bottom: 150px;
+            left: 30px;
+            z-index: 200;
+            background: var(--win-face);
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            min-width: 180px;
+            max-width: 340px;
+        }
+
+        .mood-titlebar {
+            background: linear-gradient(to right, var(--win-title-from), var(--win-title-to));
+            height: 16px;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .mood-titlebar span {
+            color: #fff;
+            font-size: 9px;
+            font-weight: bold;
             letter-spacing: 0.5px;
         }
 
-        /* Info Panel */
-        .info-panel {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            z-index: 200;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(16px);
-            padding: 12px 24px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.8);
-            font-family: monospace;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            pointer-events: none;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        .mood-body {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px 5px;
         }
 
-        .info-panel:hover {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(124, 58, 237, 0.6);
+        .mood-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
         }
 
-        /* Mood Badge */
-        .mood-badge {
-            position: fixed;
-            bottom: 120px;
-            left: 40px;
-            z-index: 200;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            padding: 8px 20px;
-            border-radius: 40px;
-            border-left: 3px solid #7c3aed;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
-            pointer-events: none;
-            transition: all 0.3s;
-            max-width: 300px;
+        #moodText {
+            font-size: 11px;
+            color: #000;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Responsive */
-        @media (max-width: 800px) {
-            .ui-container {
-                flex-direction: column;
-                bottom: 20px;
-                left: 20px;
-                right: 20px;
-                padding: 20px;
-            }
-            .button-group {
-                justify-content: space-between;
-                width: 100%;
-            }
-            .mood-badge {
-                bottom: 100px;
-                left: 20px;
-                font-size: 0.7rem;
-                max-width: 250px;
-                white-space: normal;
-            }
+        /* =============================================
+           TASKBAR
+           ============================================= */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            z-index: 300;
+            background: var(--win-face);
+            border-top: 2px solid var(--win-border-lt);
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            gap: 4px;
         }
 
-        /* Loading effect */
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+        /* Start button */
+        .start-btn {
+            height: 22px;
+            background: var(--win-btn-face);
+            border-top:    2px solid var(--win-border-lt);
+            border-left:   2px solid var(--win-border-lt);
+            border-right:  2px solid var(--win-border-dk);
+            border-bottom: 2px solid var(--win-border-dk);
+            padding: 0 8px 0 4px;
+            font-family: 'Tahoma', Arial, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .start-btn:active {
+            border-top:    2px solid var(--win-border-dk);
+            border-left:   2px solid var(--win-border-dk);
+            border-right:  2px solid var(--win-border-lt);
+            border-bottom: 2px solid var(--win-border-lt);
+        }
+
+        .start-logo {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Vertical divider */
+        .taskbar-divider {
+            width: 1px;
+            height: 22px;
+            border-left: 1px solid var(--win-border-mid);
+            border-right: 1px solid var(--win-border-lt);
+            margin: 0 2px;
+        }
+
+        /* Quick launch */
+        .quick-launch {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .ql-btn {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Active task pill */
+        .task-pill {
+            height: 22px;
+            background: var(--win-hilight);
+            border-top:    1px solid var(--win-border-dk);
+            border-left:   1px solid var(--win-border-dk);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 140px;
+            max-width: 180px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* System tray (right side) */
+        .sys-tray {
+            margin-left: auto;
+            height: 22px;
+            background: var(--win-hilight);
+            border-top:    1px solid var(--win-border-dk);
+            border-left:   1px solid var(--win-border-dk);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+            padding: 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        #clockDisplay {
+            font-size: 11px;
+            color: #000;
+            min-width: 38px;
+            text-align: center;
+        }
+
+        /* =============================================
+           PROGRESS BAR (inside mood badge when generating)
+           ============================================= */
+        .win-progress-wrap {
+            height: 12px;
+            background: #fff;
+            border-top:    1px solid var(--win-border-dk);
+            border-left:   1px solid var(--win-border-dk);
+            border-right:  1px solid var(--win-border-lt);
+            border-bottom: 1px solid var(--win-border-lt);
+            margin: 0 8px 5px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .win-progress-wrap.show { display: block; }
+
+        .win-progress-bar {
+            height: 100%;
+            background: #000080;
+            width: 0%;
+            transition: width 1.2s linear;
+        }
+
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 700px) {
+            .win-window {
+                bottom: 32px;
+                left: 4px;
+                right: 4px;
+            }
+            .button-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .win-btn { min-width: 110px; }
+            .info-window { min-width: 160px; }
+            .mood-badge { left: 4px; bottom: 140px; max-width: 240px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- ─────────────── INFO PANEL (top-right) ─────────────── -->
     <div class="info-panel">
-        🎧 VIBESCAPE • AI MOOD VISUALIZER
-    </div>
-    <div class="mood-badge" id="moodBadge">
-        ✨ current vibe: dreamy cosmic nebula
-    </div>
-    <div class="ui-container" id="ui">
-        <div class="input-group">
-            <label>✨ MANIFEST YOUR VIBE</label>
-            <textarea id="moodInput" class="glass-input" rows="2" placeholder="Describe your mood... e.g., 'neon dreams in rain', 'ethereal golden forest', 'cosmic purple storm'"></textarea>
-        </div>
-        <div class="button-group">
-            <button id="micBtn" class="premium-btn">🎤 CONNECT MIC</button>
-            <button id="generateBtn" class="premium-btn">🌀 GENERATE LANDSCAPE</button>
-            <div class="mic-status">
-                <span class="status-led" id="micLed"></span>
-                <span id="micText">Mic offline</span>
+        <div class="info-window">
+            <div class="info-titlebar">
+                <svg class="win-title-icon" viewBox="0 0 16 16" fill="none">
+                    <rect x="1" y="1" width="6" height="6" fill="#f00"/>
+                    <rect x="9" y="1" width="6" height="6" fill="#0f0"/>
+                    <rect x="1" y="9" width="6" height="6" fill="#00f"/>
+                    <rect x="9" y="9" width="6" height="6" fill="#ff0"/>
+                </svg>
+                <span>VibeScape — AI Mood Visualizer v1.0</span>
+            </div>
+            <div class="info-body">
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">Running</span>
+                </div>
+                <div class="win-separator"></div>
+                <div class="info-row">
+                    <span class="info-label">Renderer:</span>
+                    <span class="info-value">WebGL / Three.js</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Audio:</span>
+                    <span class="info-value" id="audioStatusVal">Disabled</span>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- ─────────────── MOOD BADGE (floating) ─────────────── -->
+    <div class="mood-badge" id="moodBadge">
+        <div class="mood-titlebar"><span>CURRENT VIBE</span></div>
+        <div class="mood-body">
+            <svg class="mood-icon" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="7" fill="#000080" stroke="#fff" stroke-width="1"/>
+                <circle cx="8" cy="8" r="3" fill="#a6caf0"/>
+            </svg>
+            <span id="moodText">dreamy cosmic nebula</span>
+        </div>
+        <div class="win-progress-wrap" id="progressWrap">
+            <div class="win-progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- ─────────────── MAIN CONTROL WINDOW ─────────────── -->
+    <div class="win-window" id="ui">
+        <!-- Title Bar -->
+        <div class="win-titlebar">
+            <div class="win-title-text">
+                <svg class="win-title-icon" viewBox="0 0 16 16">
+                    <rect x="1" y="1" width="6" height="6" fill="#f00"/>
+                    <rect x="9" y="1" width="6" height="6" fill="#0f0"/>
+                    <rect x="1" y="9" width="6" height="6" fill="#00f"/>
+                    <rect x="9" y="9" width="6" height="6" fill="#ff0"/>
+                </svg>
+                VibeScape Controls
+            </div>
+            <div class="win-titlebar-btns">
+                <div class="win-tbtn" title="Minimize">_</div>
+                <div class="win-tbtn" title="Maximize">&#9633;</div>
+                <div class="win-tbtn" title="Close" style="font-weight:bold">&#10005;</div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="win-body">
+            <!-- Mood Text Input -->
+            <div class="input-group">
+                <label for="moodInput">Manifest Your Vibe:</label>
+                <textarea
+                    id="moodInput"
+                    class="win-textarea"
+                    rows="2"
+                    placeholder="e.g. neon dreams in rain, ethereal golden forest, cosmic purple storm..."
+                ></textarea>
+            </div>
+
+            <!-- Buttons + Mic -->
+            <div class="button-group">
+                <button id="micBtn" class="win-btn">&#127908; Connect Mic</button>
+                <button id="generateBtn" class="win-btn">&#127752; Generate Landscape</button>
+                <div class="mic-status">
+                    <span class="status-led" id="micLed"></span>
+                    <span id="micText">Mic offline</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────── TASKBAR ─────────────── -->
+    <div class="taskbar">
+        <button class="start-btn">
+            <svg class="start-logo" viewBox="0 0 16 16" fill="none">
+                <rect x="0" y="0" width="7" height="7" fill="#f00"/>
+                <rect x="9" y="0" width="7" height="7" fill="#0f0"/>
+                <rect x="0" y="9" width="7" height="7" fill="#00f"/>
+                <rect x="9" y="9" width="7" height="7" fill="#ff0"/>
+            </svg>
+            <b>Start</b>
+        </button>
+
+        <div class="taskbar-divider"></div>
+
+        <div class="quick-launch">
+            <div class="ql-btn" title="VibeScape">&#127752;</div>
+            <div class="ql-btn" title="Microphone">&#127908;</div>
+        </div>
+
+        <div class="taskbar-divider"></div>
+
+        <!-- Active window task -->
+        <div class="task-pill">
+            <svg width="14" height="14" viewBox="0 0 16 16">
+                <rect x="1" y="1" width="6" height="6" fill="#f00"/>
+                <rect x="9" y="1" width="6" height="6" fill="#0f0"/>
+                <rect x="1" y="9" width="6" height="6" fill="#00f"/>
+                <rect x="9" y="9" width="6" height="6" fill="#ff0"/>
+            </svg>
+            VibeScape Controls
+        </div>
+
+        <!-- System Tray -->
+        <div class="sys-tray">
+            <span title="Audio">&#128266;</span>
+            <span title="Network">&#128225;</span>
+            <span id="clockDisplay">12:00</span>
+        </div>
+    </div>
+
+
+    <!-- ─────────────── THREE.JS / LOGIC ─────────────── -->
     <script type="importmap">
         {
             "imports": {
@@ -311,24 +722,24 @@
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-        
-        // --- SCENE SETUP WITH IMMERSIVE ATMOSPHERE ---
+
+        // --- SCENE SETUP ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x020210);
         scene.fog = new THREE.FogExp2(0x020210, 0.006);
-        
+
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(7, 5, 14);
         camera.lookAt(0, 1, 0);
-        
+
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.toneMapping = THREE.ReinhardToneMapping;
         renderer.toneMappingExposure = 1.3;
         document.body.appendChild(renderer.domElement);
-        
-        // Post Processing with intense bloom
+
+        // Post Processing
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.3, 0.4, 0.9);
         bloomPass.threshold = 0.08;
@@ -337,8 +748,8 @@
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
         effectComposer.addPass(bloomPass);
-        
-        // Cinematic Controls with auto-rotation
+
+        // Controls
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.06;
@@ -348,16 +759,13 @@
         controls.enablePan = false;
         controls.maxPolarAngle = Math.PI / 2.2;
         controls.target.set(0, 1.5, 0);
-        
-        // --- TERRAIN WITH ADVANCED GEOMETRY ---
-        const width = 28;
-        const depth = 28;
-        const segments = 160;
+
+        // Terrain
+        const width = 28, depth = 28, segments = 160;
         const geometry = new THREE.PlaneGeometry(width, depth, segments, segments);
         geometry.rotateX(-Math.PI / 2);
         const positionAttribute = geometry.attributes.position;
         const originalY = new Array(positionAttribute.count).fill(0);
-        
         for (let i = 0; i < positionAttribute.count; i++) {
             const x = positionAttribute.getX(i);
             const z = positionAttribute.getZ(i);
@@ -367,174 +775,130 @@
             positionAttribute.setY(i, y);
         }
         geometry.computeVertexNormals();
-        
+
         const terrainMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4a3c8c,
-            emissive: 0x2a1c5c,
-            emissiveIntensity: 0.5,
-            roughness: 0.35,
-            metalness: 0.75,
-            flatShading: false,
-            side: THREE.DoubleSide
+            color: 0x4a3c8c, emissive: 0x2a1c5c, emissiveIntensity: 0.5,
+            roughness: 0.35, metalness: 0.75, flatShading: false, side: THREE.DoubleSide
         });
         const terrain = new THREE.Mesh(geometry, terrainMaterial);
         scene.add(terrain);
-        
-        // --- GLOWING PARTICLE SYSTEM (STARFIELD + FLOATING ORBS)---
+
+        // Particles
         const particleCount = 6000;
         const particleGeometry = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         const particleColors = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount; i++) {
-            particlePositions[i*3] = (Math.random() - 0.5) * 85;
+            particlePositions[i*3]   = (Math.random() - 0.5) * 85;
             particlePositions[i*3+1] = (Math.random() - 0.5) * 12 + 2;
             particlePositions[i*3+2] = (Math.random() - 0.5) * 55 - 15;
             const color = new THREE.Color().setHSL(0.6 + Math.random() * 0.3, 0.8, 0.6);
-            particleColors[i*3] = color.r;
-            particleColors[i*3+1] = color.g;
-            particleColors[i*3+2] = color.b;
+            particleColors[i*3] = color.r; particleColors[i*3+1] = color.g; particleColors[i*3+2] = color.b;
         }
         particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
         particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
         const particleMaterial = new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending });
         const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
         scene.add(particleSystem);
-        
-        // Floating Runes / Orbs
+
+        // Orbs
         const orbGroup = [];
         for (let i = 0; i < 180; i++) {
             const size = 0.06 + Math.random() * 0.12;
-            const orbMat = new THREE.MeshStandardMaterial({
-                color: 0xff66cc,
-                emissive: 0xff44aa,
-                emissiveIntensity: 0.5,
-                metalness: 0.3,
-                roughness: 0.2
-            });
+            const orbMat = new THREE.MeshStandardMaterial({ color: 0xff66cc, emissive: 0xff44aa, emissiveIntensity: 0.5, metalness: 0.3, roughness: 0.2 });
             const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 16), orbMat);
-            sphere.userData = {
-                speedX: (Math.random() - 0.5) * 0.012,
-                speedY: (Math.random() - 0.5) * 0.008,
-                speedZ: (Math.random() - 0.5) * 0.01,
-                phase: Math.random() * Math.PI * 2
-            };
+            sphere.userData = { speedX: (Math.random() - 0.5) * 0.012, speedY: (Math.random() - 0.5) * 0.008, speedZ: (Math.random() - 0.5) * 0.01, phase: Math.random() * Math.PI * 2 };
             sphere.position.x = (Math.random() - 0.5) * 22;
             sphere.position.y = Math.random() * 5 + 0.5;
             sphere.position.z = (Math.random() - 0.5) * 20;
             scene.add(sphere);
             orbGroup.push(sphere);
         }
-        
-        // Dynamic Lighting System
-        const ambientLight = new THREE.AmbientLight(0x1a1a2e);
-        scene.add(ambientLight);
+
+        // Lights
+        scene.add(new THREE.AmbientLight(0x1a1a2e));
         const mainLight = new THREE.DirectionalLight(0xffccaa, 1.0);
-        mainLight.position.set(5, 12, 4);
-        mainLight.castShadow = true;
-        scene.add(mainLight);
-        const backLight = new THREE.PointLight(0x4466ff, 0.8);
-        backLight.position.set(-4, 5, -7);
-        scene.add(backLight);
-        const colorLight = new THREE.PointLight(0xff66aa, 0.9);
-        colorLight.position.set(3, 4, 4);
-        scene.add(colorLight);
-        const fillLight = new THREE.PointLight(0x33ccff, 0.5);
-        fillLight.position.set(2, 3, -3);
-        scene.add(fillLight);
-        
-        // Starfield background effect (distant particles)
+        mainLight.position.set(5, 12, 4); mainLight.castShadow = true; scene.add(mainLight);
+        const backLight = new THREE.PointLight(0x4466ff, 0.8); backLight.position.set(-4, 5, -7); scene.add(backLight);
+        const colorLight = new THREE.PointLight(0xff66aa, 0.9); colorLight.position.set(3, 4, 4); scene.add(colorLight);
+        const fillLight = new THREE.PointLight(0x33ccff, 0.5); fillLight.position.set(2, 3, -3); scene.add(fillLight);
+
+        // Stars
         const starGeo = new THREE.BufferGeometry();
-        const starCount = 1500;
         const starPos = [];
-        for (let i = 0; i < starCount; i++) {
-            starPos.push((Math.random() - 0.5) * 200);
-            starPos.push((Math.random() - 0.5) * 100);
-            starPos.push((Math.random() - 0.5) * 80 - 40);
-        }
+        for (let i = 0; i < 1500; i++) { starPos.push((Math.random()-0.5)*200, (Math.random()-0.5)*100, (Math.random()-0.5)*80-40); }
         starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
         const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
-        
-        // --- AUDIO SETUP ---
-        let audioContext = null;
-        let mediaStream = null;
-        let sourceNode = null;
-        let analyserNode = null;
-        let isMicActive = false;
-        let audioDataArray = null;
-        
-        const micBtn = document.getElementById('micBtn');
+
+        // --- AUDIO ---
+        let audioContext = null, mediaStream = null, sourceNode = null, analyserNode = null;
+        let isMicActive = false, audioDataArray = null;
+
+        const micBtn    = document.getElementById('micBtn');
         const generateBtn = document.getElementById('generateBtn');
         const moodTextarea = document.getElementById('moodInput');
-        const micLed = document.getElementById('micLed');
+        const micLed    = document.getElementById('micLed');
         const micTextSpan = document.getElementById('micText');
-        const moodBadge = document.getElementById('moodBadge');
-        
-        // --- AI SIMULATION (Enhanced keyword mapping)---
+        const moodTextEl  = document.getElementById('moodText');
+        const audioStatusVal = document.getElementById('audioStatusVal');
+        const progressWrap = document.getElementById('progressWrap');
+        const progressBar  = document.getElementById('progressBar');
+
+        // --- AI SIM ---
         function simulateAIInterpretation(moodText) {
             const text = moodText.toLowerCase();
-            let params = {
-                colorHue: 0.65,
-                saturation: 0.75,
-                lightness: 0.55,
-                particleSpeed: 0.5,
-                turbulence: 0.55,
-                bloomStrength: 1.0,
-                emissiveIntensity: 0.6,
-                movementIntensity: 0.65,
-                orbSpeed: 0.5
-            };
-            
-            if (text.includes('blue') || text.includes('sad') || text.includes('melancholy')) {
+            let params = { colorHue: 0.65, saturation: 0.75, lightness: 0.55, particleSpeed: 0.5, turbulence: 0.55, bloomStrength: 1.0, emissiveIntensity: 0.6, movementIntensity: 0.65, orbSpeed: 0.5 };
+            if (text.includes('blue') || text.includes('sad') || text.includes('melancholy'))
                 params = { ...params, colorHue: 0.55, saturation: 0.7, turbulence: 0.35, particleSpeed: 0.25, bloomStrength: 0.8 };
-            }
-            if (text.includes('fire') || text.includes('angry') || text.includes('red') || text.includes('volcano')) {
+            if (text.includes('fire') || text.includes('angry') || text.includes('red') || text.includes('volcano'))
                 params = { ...params, colorHue: 0.05, saturation: 0.9, turbulence: 0.9, particleSpeed: 0.95, movementIntensity: 1.1, bloomStrength: 1.4 };
-            }
-            if (text.includes('neon') || text.includes('cyber') || text.includes('city') || text.includes('rain')) {
+            if (text.includes('neon') || text.includes('cyber') || text.includes('city') || text.includes('rain'))
                 params = { ...params, colorHue: 0.82, saturation: 0.95, turbulence: 0.75, particleSpeed: 0.85, bloomStrength: 1.5, emissiveIntensity: 0.9 };
-            }
-            if (text.includes('forest') || text.includes('green') || text.includes('nature') || text.includes('calm')) {
+            if (text.includes('forest') || text.includes('green') || text.includes('nature') || text.includes('calm'))
                 params = { ...params, colorHue: 0.35, saturation: 0.75, turbulence: 0.45, particleSpeed: 0.35, movementIntensity: 0.45 };
-            }
-            if (text.includes('gold') || text.includes('sunset') || text.includes('euphoric')) {
+            if (text.includes('gold') || text.includes('sunset') || text.includes('euphoric'))
                 params = { ...params, colorHue: 0.12, saturation: 0.85, turbulence: 0.55, particleSpeed: 0.7, bloomStrength: 1.2 };
-            }
-            if (text.includes('purple') || text.includes('cosmic') || text.includes('space')) {
+            if (text.includes('purple') || text.includes('cosmic') || text.includes('space'))
                 params = { ...params, colorHue: 0.75, saturation: 0.85, turbulence: 0.65, particleSpeed: 0.6, bloomStrength: 1.3, emissiveIntensity: 0.85 };
-            }
-            if (text.includes('storm') || text.includes('chaos')) {
+            if (text.includes('storm') || text.includes('chaos'))
                 params = { ...params, turbulence: 0.95, movementIntensity: 1.0, colorHue: 0.6, saturation: 0.6 };
-            }
             return params;
         }
-        
+
         let currentParams = simulateAIInterpretation("dreamy cosmic");
         let targetParams = { ...currentParams };
         let tweenFactor = 1;
-        
+
         function applyNewMood(moodText) {
             targetParams = simulateAIInterpretation(moodText);
             tweenFactor = 0;
-            moodBadge.textContent = `✨ current vibe: ${moodText.substring(0, 40)}${moodText.length > 40 ? '...' : ''}`;
+            const label = moodText.substring(0, 36) + (moodText.length > 36 ? '...' : '');
+            moodTextEl.textContent = label;
+            // fake progress bar
+            progressWrap.classList.add('show');
+            progressBar.style.width = '0%';
+            requestAnimationFrame(() => {
+                progressBar.style.width = '100%';
+                setTimeout(() => progressWrap.classList.remove('show'), 1400);
+            });
         }
-        
+
         function lerp(a, b, t) { return a + (b - a) * t; }
-        
+
         function updateVisualFromParams(delta) {
             if (tweenFactor < 1) {
                 tweenFactor += delta * 2.2;
                 if (tweenFactor > 1) tweenFactor = 1;
                 const ease = 1 - Math.pow(1 - tweenFactor, 2);
-                currentParams.colorHue = lerp(currentParams.colorHue, targetParams.colorHue, ease);
-                currentParams.saturation = lerp(currentParams.saturation, targetParams.saturation, ease);
-                currentParams.turbulence = lerp(currentParams.turbulence, targetParams.turbulence, ease);
-                currentParams.particleSpeed = lerp(currentParams.particleSpeed, targetParams.particleSpeed, ease);
+                currentParams.colorHue       = lerp(currentParams.colorHue, targetParams.colorHue, ease);
+                currentParams.saturation     = lerp(currentParams.saturation, targetParams.saturation, ease);
+                currentParams.turbulence     = lerp(currentParams.turbulence, targetParams.turbulence, ease);
+                currentParams.particleSpeed  = lerp(currentParams.particleSpeed, targetParams.particleSpeed, ease);
                 currentParams.movementIntensity = lerp(currentParams.movementIntensity, targetParams.movementIntensity, ease);
-                currentParams.bloomStrength = lerp(currentParams.bloomStrength, targetParams.bloomStrength, ease);
+                currentParams.bloomStrength  = lerp(currentParams.bloomStrength, targetParams.bloomStrength, ease);
                 currentParams.emissiveIntensity = lerp(currentParams.emissiveIntensity, targetParams.emissiveIntensity, ease);
-                
                 bloomPass.strength = currentParams.bloomStrength;
                 const mainColor = new THREE.Color().setHSL(currentParams.colorHue, currentParams.saturation, 0.5);
                 const emissiveColor = new THREE.Color().setHSL(currentParams.colorHue, currentParams.saturation, 0.15);
@@ -545,8 +909,8 @@
                 fillLight.color.setHSL((currentParams.colorHue + 0.3) % 1, 0.7, 0.6);
             }
         }
-        
-        // --- MICROPHONE FUNCTIONS ---
+
+        // --- MICROPHONE ---
         async function initMicrophone() {
             if (audioContext && audioContext.state !== 'closed') await closeAudioContext();
             try {
@@ -561,15 +925,16 @@
                 await audioContext.resume();
                 isMicActive = true;
                 micLed.classList.add('active');
-                micTextSpan.innerText = "Mic LIVE";
+                micTextSpan.innerText = 'Mic LIVE';
+                audioStatusVal.textContent = 'Enabled';
             } catch (err) {
                 isMicActive = false;
                 micLed.classList.remove('active');
-                micTextSpan.innerText = "Mic Error";
-                alert("Please allow microphone access for audio-reactive magic!");
+                micTextSpan.innerText = 'Mic Error';
+                alert('Please allow microphone access for audio-reactive magic!');
             }
         }
-        
+
         async function closeAudioContext() {
             if (sourceNode) sourceNode.disconnect();
             if (analyserNode) analyserNode.disconnect();
@@ -577,30 +942,29 @@
             if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
             isMicActive = false;
             micLed.classList.remove('active');
-            micTextSpan.innerText = "Mic offline";
+            micTextSpan.innerText = 'Mic offline';
+            audioStatusVal.textContent = 'Disabled';
         }
-        
+
         micBtn.addEventListener('click', async () => {
             if (isMicActive) await closeAudioContext();
             else await initMicrophone();
         });
-        
+
         generateBtn.addEventListener('click', () => {
             const mood = moodTextarea.value.trim();
-            if (mood) applyNewMood(mood);
-            else applyNewMood("ethereal dreamwave");
+            applyNewMood(mood || 'ethereal dreamwave');
         });
-        
-        // --- ANIMATION LOOP WITH AUDIO REACTIVITY ---
+
+        // --- ANIMATION LOOP ---
         let lastTime = performance.now();
-        
+
         function animateScene() {
             const now = performance.now();
             let delta = Math.min(0.033, (now - lastTime) / 1000);
             lastTime = now;
-            
             updateVisualFromParams(delta);
-            
+
             let bassEnergy = 0.4, trebleEnergy = 0.3;
             if (isMicActive && analyserNode && audioDataArray) {
                 analyserNode.getByteFrequencyData(audioDataArray);
@@ -611,16 +975,15 @@
                 trebleEnergy = Math.min(0.9, (trebleSum / (25 * 255)) * 1.2);
             } else {
                 const t = performance.now() * 0.002;
-                bassEnergy = 0.35 + Math.sin(t) * 0.2;
-                trebleEnergy = 0.3 + Math.cos(t * 1.5) * 0.2;
+                bassEnergy   = 0.35 + Math.sin(t) * 0.2;
+                trebleEnergy = 0.30 + Math.cos(t * 1.5) * 0.2;
             }
-            
-            // Terrain morphing
+
+            // Terrain
             const positions = geometry.attributes.position.array;
             const time = performance.now() * 0.002;
             for (let i = 0; i < positions.length / 3; i++) {
-                const x = positions[i*3];
-                const z = positions[i*3+2];
+                const x = positions[i*3], z = positions[i*3+2];
                 let yBase = Math.sin(x * 0.5 + time * 0.6) * 0.4 + Math.cos(z * 0.6 + time * 0.5) * 0.4;
                 yBase += Math.sin(x * 1.3 + z * 1.1) * 0.2;
                 const audioBoost = bassEnergy * 0.9 * currentParams.movementIntensity;
@@ -630,14 +993,12 @@
             }
             geometry.attributes.position.needsUpdate = true;
             geometry.computeVertexNormals();
-            
-            // Particles react to treble
+
             particleMaterial.size = 0.07 + trebleEnergy * 0.1;
             particleSystem.rotation.y += 0.003 + trebleEnergy * 0.01;
             stars.rotation.y += 0.0005;
             stars.rotation.x += 0.0003;
-            
-            // Orbs motion
+
             orbGroup.forEach((orb, idx) => {
                 const speedFact = 0.008 + currentParams.particleSpeed * 0.018 + trebleEnergy * 0.015;
                 orb.position.x += Math.sin(performance.now() * 0.002 + idx) * 0.008 * speedFact;
@@ -653,38 +1014,48 @@
                 const orbHue = (currentParams.colorHue + 0.25) % 1;
                 orb.material.color.setHSL(orbHue, 0.9, 0.6);
             });
-            
+
             controls.autoRotateSpeed = 0.45 + trebleEnergy * 0.7 + currentParams.movementIntensity * 0.2;
             const bgHue = (currentParams.colorHue + 0.55) % 1;
             scene.background.setHSL(bgHue, 0.6, 0.04);
             scene.fog.color.copy(scene.background);
             colorLight.intensity = 0.7 + bassEnergy * 1.0;
-            mainLight.intensity = 0.8 + trebleEnergy * 0.8;
-            
+            mainLight.intensity  = 0.8 + trebleEnergy * 0.8;
+
             controls.update();
             effectComposer.render();
             requestAnimationFrame(animateScene);
         }
-        
-        // UI Visibility
+
+        // UI visibility
         let uiHideTimeout;
         const uiDiv = document.getElementById('ui');
         function showUI() {
             uiDiv.classList.add('visible');
             clearTimeout(uiHideTimeout);
-            uiHideTimeout = setTimeout(() => uiDiv.classList.remove('visible'), 3500);
+            uiHideTimeout = setTimeout(() => uiDiv.classList.remove('visible'), 4000);
         }
         window.addEventListener('mousemove', showUI);
         window.addEventListener('touchstart', showUI);
         showUI();
-        
+
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             effectComposer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        applyNewMood("dreamy cosmic nebula");
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clockDisplay').textContent = `${h}:${m}`;
+        }
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        applyNewMood('dreamy cosmic nebula');
         animateScene();
     </script>
 </body>
